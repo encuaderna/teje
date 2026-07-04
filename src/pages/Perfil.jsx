@@ -49,7 +49,7 @@ export default function Perfil() {
     : conEstado.filter(p => p.estado === filtro);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-xl mx-auto px-4 py-8 space-y-6">
       {/* Header usuario */}
       <div className="bg-card border border-border rounded-2xl p-5 flex items-center gap-4">
         <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-2xl">
@@ -83,14 +83,15 @@ export default function Perfil() {
       {/* Lista de proyectos con estado */}
       <div className="space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <h2 className="font-heading text-base font-semibold">Mis proyectos</h2>
+          <h2 className="font-heading text-lg font-semibold">Mis proyectos</h2>
           <div className="flex gap-1.5">
             {["Todos", "En progreso", "Completado"].map(f => (
               <button
                 key={f}
                 onClick={() => setFiltro(f)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors
-                  ${filtro === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
+                aria-pressed={filtro === f}
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-colors
+                  ${filtro === f ? "bg-primary text-primary-foreground shadow-sm" : "bg-muted text-muted-foreground hover:text-foreground"}`}
               >
                 {f === "Todos" ? "Todos" : f === "En progreso" ? "En curso" : "Hechos"}
               </button>

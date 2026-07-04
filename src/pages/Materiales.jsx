@@ -131,10 +131,10 @@ export default function Materiales() {
     );
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-xl mx-auto px-4 py-8 space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold">Materiales</h1>
-        <p className="text-muted-foreground text-sm mt-1">Conoce los hilos, lanas y fibras más usados en el tejido.</p>
+        <h1 className="font-heading text-3xl font-semibold text-foreground">Materiales</h1>
+        <p className="text-muted-foreground text-sm mt-1">Conocé los hilos, lanas y fibras más usados en el tejido.</p>
       </div>
 
       {/* Checklist resumen */}
@@ -151,13 +151,14 @@ export default function Materiales() {
         </div>
       )}
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div role="group" aria-label="Filtrar por tipo" className="flex gap-2 overflow-x-auto pb-1">
         {tipos.map(t => (
           <button
             key={t}
             onClick={() => setFiltro(t)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-              ${filtro === t ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+            aria-pressed={filtro === t}
+            className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors
+              ${filtro === t ? "bg-primary text-primary-foreground shadow-sm" : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"}`}
           >
             {t}
           </button>

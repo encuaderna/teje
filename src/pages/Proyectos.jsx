@@ -4,10 +4,11 @@ import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Targ
 import { useToast } from "@/components/ui/use-toast";
 
 const nivelColor = {
-  Principiante: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400",
-  Intermedio: "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-  Avanzado: "bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400",
+  Principiante: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300",
+  Intermedio: "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300",
+  Avanzado: "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300",
 };
+const nivelEmoji = { Principiante: "🌱", Intermedio: "🌿", Avanzado: "🌺" };
 
 function SeccionDetalle({ icon: Icon, titulo, color, children }) {
   return (
@@ -100,20 +101,20 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
+    <article className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
       {proyecto.imagen_url && (
-        <img src={proyecto.imagen_url} alt={proyecto.titulo} className="w-full h-40 object-cover" />
+        <img src={proyecto.imagen_url} alt={proyecto.titulo} className="w-full h-44 object-cover" />
       )}
-      <div className="p-4 space-y-3">
+      <div className="p-5 space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
-          <h2 className="font-heading text-lg font-semibold">{proyecto.titulo}</h2>
-          <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${nivelColor[proyecto.nivel]}`}>
-            {proyecto.nivel}
+          <h2 className="font-heading text-xl font-semibold text-foreground leading-tight">{proyecto.titulo}</h2>
+          <span className={`text-xs font-semibold px-3 py-1 rounded-full flex-shrink-0 flex items-center gap-1 ${nivelColor[proyecto.nivel]}`}>
+            <span aria-hidden="true">{nivelEmoji[proyecto.nivel]}</span> {proyecto.nivel}
           </span>
         </div>
 
-        <p className="text-sm text-muted-foreground leading-relaxed">{proyecto.descripcion}</p>
+        <p className="text-sm text-foreground/80 leading-relaxed">{proyecto.descripcion}</p>
 
         {/* Meta info */}
         <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
@@ -134,19 +135,19 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
 
         {/* Estado / botón iniciar */}
         {proyecto.estado ? (
-          <div className={`flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl
+          <div className={`flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl
             ${proyecto.estado === "Completado"
-              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
-              : "bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400"}`}>
-            <CheckCircle2 size={14} />
+              ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+              : "bg-blue-50 text-blue-800 dark:bg-blue-950/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800"}`}>
+            <CheckCircle2 size={16} aria-hidden="true" />
             {proyecto.estado}
           </div>
         ) : (
           <button
             onClick={() => onAgregar(proyecto)}
-            className="flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl bg-muted hover:bg-muted/70 text-muted-foreground hover:text-foreground transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors shadow-sm"
           >
-            <Plus size={14} />
+            <Plus size={16} aria-hidden="true" />
             Iniciar proyecto
           </button>
         )}
@@ -154,10 +155,11 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
         {/* Toggle detalle */}
         <button
           onClick={() => setExpandido(!expandido)}
-          className="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+          aria-expanded={expandido}
+          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-muted hover:bg-muted/70 text-foreground font-semibold text-sm transition-colors"
         >
-          {expandido ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          {expandido ? "Ocultar detalle" : "Ver instrucciones completas"}
+          {expandido ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
+          {expandido ? "Ocultar instrucciones" : "Ver instrucciones completas"}
         </button>
 
         {/* Detalle expandido */}
@@ -228,7 +230,7 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -263,19 +265,20 @@ export default function Proyectos() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-xl mx-auto px-4 py-8 space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold">Proyectos</h1>
-        <p className="text-muted-foreground text-sm mt-1">Elige un proyecto según tu nivel y sigue los pasos.</p>
+        <h1 className="font-heading text-3xl font-semibold text-foreground">Proyectos</h1>
+        <p className="text-muted-foreground text-sm mt-1">Elegí un proyecto según tu nivel y seguí los pasos.</p>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div role="group" aria-label="Filtrar por nivel" className="flex gap-2 overflow-x-auto pb-1">
         {niveles.map(n => (
           <button
             key={n}
             onClick={() => setNivel(n)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-              ${nivel === n ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+            aria-pressed={nivel === n}
+            className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors
+              ${nivel === n ? "bg-primary text-primary-foreground shadow-sm" : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"}`}
           >
             {n}
           </button>

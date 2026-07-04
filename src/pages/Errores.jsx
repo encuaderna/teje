@@ -1,62 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { ChevronDown, ChevronUp, AlertTriangle, Lightbulb } from "lucide-react";
+import { ChevronDown, ChevronUp, AlertTriangle, Lightbulb, HelpCircle } from "lucide-react";
 
-const nivelColor = {
-  Principiante: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400",
-  Intermedio: "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-  Avanzado: "bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400",
-  Todos: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+const nivelConfig = {
+  Principiante: { cls: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300", emoji: "🌱" },
+  Intermedio:   { cls: "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300", emoji: "🌿" },
+  Avanzado:     { cls: "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300", emoji: "🌺" },
+  Todos:        { cls: "bg-muted text-muted-foreground", emoji: "📌" },
 };
 
 function ErrorCard({ error }) {
   const [expandido, setExpandido] = useState(false);
+  const nivel = nivelConfig[error.nivel] || nivelConfig.Todos;
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-4 space-y-3">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-start gap-3">
-          <div className="p-2 bg-rose-100 dark:bg-rose-950/30 rounded-xl flex-shrink-0 mt-0.5">
-            <AlertTriangle size={16} className="text-rose-600 dark:text-rose-400" />
-          </div>
-          <div>
-            <h2 className="font-heading text-base font-semibold">{error.titulo}</h2>
-            {error.tecnica_relacionada && (
-              <p className="text-xs text-muted-foreground mt-0.5">{error.tecnica_relacionada}</p>
-            )}
-          </div>
+    <article className="bg-card border border-border rounded-2xl p-5 space-y-4 shadow-sm">
+      {/* Header */}
+      <div className="flex items-start gap-3">
+        <div className="p-2.5 bg-rose-100 dark:bg-rose-950/40 rounded-xl flex-shrink-0">
+          <AlertTriangle size={18} className="text-rose-700 dark:text-rose-400" aria-hidden="true" />
         </div>
-        <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${nivelColor[error.nivel] || nivelColor["Todos"]}`}>
-          {error.nivel}
-        </span>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <h2 className="font-heading text-base font-semibold text-foreground leading-snug">{error.titulo}</h2>
+            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 flex items-center gap-1 ${nivel.cls}`}>
+              <span aria-hidden="true">{nivel.emoji}</span> {error.nivel}
+            </span>
+          </div>
+          {error.tecnica_relacionada && (
+            <p className="text-xs text-muted-foreground mt-0.5">{error.tecnica_relacionada}</p>
+          )}
+        </div>
       </div>
 
-      <p className="text-sm text-muted-foreground leading-relaxed">{error.descripcion_error}</p>
+      <p className="text-sm text-foreground/80 leading-relaxed">{error.descripcion_error}</p>
 
+      {/* Botón expandir — grande */}
       <button
         onClick={() => setExpandido(!expandido)}
-        className="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+        aria-expanded={expandido}
+        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-muted hover:bg-muted/70 text-foreground font-semibold text-sm transition-colors"
       >
-        {expandido ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        {expandido ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
         {expandido ? "Ocultar solución" : "Ver causa y solución"}
       </button>
 
       {expandido && (
-        <div className="space-y-3 pt-2 border-t border-border">
-          <div className="bg-amber-50 dark:bg-amber-950/20 rounded-xl p-3">
-            <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider mb-1">¿Por qué ocurre?</p>
+        <div className="space-y-3">
+          {/* Causa */}
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <HelpCircle size={14} className="text-amber-700 dark:text-amber-400" aria-hidden="true" />
+              <p className="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">¿Por qué ocurre?</p>
+            </div>
             <p className="text-sm text-foreground leading-relaxed">{error.causa}</p>
           </div>
-          <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-xl p-3">
-            <div className="flex items-center gap-1.5 mb-1">
-              <Lightbulb size={13} className="text-emerald-600 dark:text-emerald-400" />
-              <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Cómo solucionarlo</p>
+
+          {/* Solución */}
+          <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Lightbulb size={14} className="text-emerald-700 dark:text-emerald-400" aria-hidden="true" />
+              <p className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">Cómo solucionarlo</p>
             </div>
             <p className="text-sm text-foreground leading-relaxed">{error.solucion}</p>
           </div>
         </div>
       )}
-    </div>
+    </article>
   );
 }
 
@@ -70,22 +80,27 @@ export default function Errores() {
   }, []);
 
   const niveles = ["Todos", "Principiante", "Intermedio", "Avanzado"];
-  const filtrados = filtro === "Todos" ? errores : errores.filter(e => e.nivel === filtro || e.nivel === "Todos");
+  const filtrados = filtro === "Todos"
+    ? errores
+    : errores.filter(e => e.nivel === filtro || e.nivel === "Todos");
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-xl mx-auto px-4 py-8 space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold">Errores Frecuentes</h1>
+        <h1 className="font-heading text-3xl font-semibold text-foreground">Errores Frecuentes</h1>
         <p className="text-muted-foreground text-sm mt-1">Los problemas más comunes al tejer y cómo resolverlos.</p>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div role="group" aria-label="Filtrar por nivel" className="flex gap-2 overflow-x-auto pb-1">
         {niveles.map(n => (
           <button
             key={n}
             onClick={() => setFiltro(n)}
-            className={`flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors
-              ${filtro === n ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+            aria-pressed={filtro === n}
+            className={`flex-shrink-0 px-5 py-2 rounded-full text-sm font-semibold transition-colors
+              ${filtro === n
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"}`}
           >
             {n}
           </button>
@@ -93,7 +108,11 @@ export default function Errores() {
       </div>
 
       {cargando ? (
-        <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-32 bg-muted animate-pulse rounded-2xl" />)}</div>
+        <div className="space-y-4" aria-busy="true">
+          {[1, 2, 3].map(i => <div key={i} className="h-32 bg-muted animate-pulse rounded-2xl" />)}
+        </div>
+      ) : filtrados.length === 0 ? (
+        <p className="text-center py-12 text-muted-foreground text-sm">No hay errores registrados para este nivel.</p>
       ) : (
         <div className="space-y-4">
           {filtrados.map(e => <ErrorCard key={e.id} error={e} />)}
