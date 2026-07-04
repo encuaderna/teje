@@ -17,6 +17,7 @@ import Notas from '@/pages/Notas';
 import Quiz from '@/pages/Quiz';
 import Comparador from '@/pages/Comparador';
 import MisTelares from '@/pages/MisTelares';
+import Glosario from '@/pages/Glosario';
 import Login from '@/pages/Login';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/comparador" element={<Comparador />} />
           <Route path="/mis-telares" element={<MisTelares />} />
+          <Route path="/glosario" element={<Glosario />} />
           <Route path="/perfil" element={<Perfil />} />
         </Route>
       </Route>

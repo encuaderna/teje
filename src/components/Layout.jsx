@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, Layers, AlertTriangle, Package, User, Moon, Sun, NotebookPen, Heart, Scale } from "lucide-react";
+import { Home, BookOpen, Layers, AlertTriangle, Package, User, Moon, Sun, NotebookPen, Heart, Scale, BookMarked } from "lucide-react";
 
 const navItems = [
   { to: "/", icon: Home, label: "Inicio" },
@@ -8,6 +8,7 @@ const navItems = [
   { to: "/proyectos", icon: BookOpen, label: "Proyectos" },
   { to: "/materiales", icon: Package, label: "Materiales" },
   { to: "/mis-telares", icon: Heart, label: "Mis Telares" },
+  { to: "/glosario", icon: BookMarked, label: "Glosario" },
   { to: "/perfil", icon: User, label: "Perfil" },
 ];
 
