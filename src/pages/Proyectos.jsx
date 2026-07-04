@@ -11,7 +11,7 @@ const nivelColor = {
 
 function ProyectoCard({ proyecto, progresos, onAgregar }) {
   const [expandido, setExpandido] = useState(false);
-  const progreso = progresos.find(p => p.proyecto_id === proyecto.id);
+  const progreso = proyecto;
 
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden">
@@ -38,12 +38,12 @@ function ProyectoCard({ proyecto, progresos, onAgregar }) {
         </div>
 
         {/* Estado progreso */}
-        {progreso ? (
+        {proyecto.estado ? (
           <div className={`flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl
-            ${progreso.estado === "Completado" ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400" :
+            ${proyecto.estado === "Completado" ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400" :
               "bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400"}`}>
             <CheckCircle2 size={14} />
-            {progreso.estado}
+            {proyecto.estado}
           </div>
         ) : (
           <button
@@ -51,7 +51,7 @@ function ProyectoCard({ proyecto, progresos, onAgregar }) {
             className="flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-xl bg-muted hover:bg-muted/70 text-muted-foreground hover:text-foreground transition-colors"
           >
             <Plus size={14} />
-            Agregar a mi progreso
+            Iniciar proyecto
           </button>
         )}
 
@@ -105,10 +105,7 @@ export default function Proyectos() {
   const { toast } = useToast();
 
   useEffect(() => {
-    Promise.all([
-      base44.entities.Proyecto.list(),
-      base44.entities.ProgresoUsuario.filter({})
-    ]).then(([p, pr]) => { setProyectos(p); setProgresos(pr); setCargando(false); });
+    base44.entities.Proyecto.list().then(p => { setProyectos(p); setProgresos(p); setCargando(false); });
   }, []);
 
   const niveles = ["Todos", "Principiante", "Intermedio", "Avanzado"];
@@ -116,16 +113,15 @@ export default function Proyectos() {
 
   const handleAgregar = async (proyecto) => {
     try {
-      const nuevo = await base44.entities.ProgresoUsuario.create({
-        proyecto_id: proyecto.id,
-        proyecto_titulo: proyecto.titulo,
+      const actualizado = await base44.entities.Proyecto.update(proyecto.id, {
         estado: "En progreso",
         fecha_inicio: new Date().toISOString().split("T")[0],
       });
-      setProgresos(prev => [...prev, nuevo]);
-      toast({ title: "¡Agregado!", description: `"${proyecto.titulo}" está en tu lista de progreso.` });
+      setProyectos(prev => prev.map(p => p.id === proyecto.id ? actualizado : p));
+      setProgresos(prev => prev.map(p => p.id === proyecto.id ? actualizado : p));
+      toast({ title: "¡Iniciado!", description: `"${proyecto.titulo}" está en tu lista de progreso.` });
     } catch (e) {
-      toast({ title: "Error", description: "No se pudo agregar el proyecto.", variant: "destructive" });
+      toast({ title: "Error", description: "No se pudo actualizar el proyecto.", variant: "destructive" });
     }
   };
 

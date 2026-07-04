@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle2, Clock, Circle, Trash2, BookOpen } from "lucide-react";
+import { CheckCircle2, Clock, Circle, BookOpen } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from "react-router-dom";
 
@@ -12,7 +12,8 @@ const estadoConfig = {
 
 export default function Perfil() {
   const [user, setUser] = useState(null);
-  const [progresos, setProgresos] = useState([]);
+  const [proyectos, setProyectos] = useState([]);
+  const [perfil, setPerfil] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [filtro, setFiltro] = useState("Todos");
   const { toast } = useToast();
@@ -20,28 +21,32 @@ export default function Perfil() {
   useEffect(() => {
     Promise.all([
       base44.auth.me(),
-      base44.entities.ProgresoUsuario.filter({})
-    ]).then(([u, p]) => { setUser(u); setProgresos(p); setCargando(false); }).catch(() => setCargando(false));
+      base44.entities.Proyecto.filter({}),
+      base44.entities.UsuarioPerfil.filter({})
+    ]).then(([u, p, up]) => {
+      setUser(u);
+      setProyectos(p);
+      setPerfil(up[0] || null);
+      setCargando(false);
+    }).catch(() => setCargando(false));
   }, []);
 
-  const handleEstado = async (progreso, nuevoEstado) => {
-    const actualizado = await base44.entities.ProgresoUsuario.update(progreso.id, {
+  const handleEstado = async (proyecto, nuevoEstado) => {
+    const actualizado = await base44.entities.Proyecto.update(proyecto.id, {
       estado: nuevoEstado,
       ...(nuevoEstado === "Completado" ? { fecha_finalizacion: new Date().toISOString().split("T")[0] } : {})
     });
-    setProgresos(prev => prev.map(p => p.id === progreso.id ? actualizado : p));
+    setProyectos(prev => prev.map(p => p.id === proyecto.id ? actualizado : p));
     toast({ title: "Estado actualizado", description: `Proyecto marcado como ${nuevoEstado}.` });
   };
 
-  const handleEliminar = async (id) => {
-    await base44.entities.ProgresoUsuario.delete(id);
-    setProgresos(prev => prev.filter(p => p.id !== id));
-    toast({ title: "Eliminado", description: "Proyecto quitado de tu lista." });
-  };
+  const conEstado = proyectos.filter(p => p.estado);
+  const completados = conEstado.filter(p => p.estado === "Completado").length;
+  const enProgreso = conEstado.filter(p => p.estado === "En progreso").length;
 
-  const filtrados = filtro === "Todos" ? progresos : progresos.filter(p => p.estado === filtro);
-  const completados = progresos.filter(p => p.estado === "Completado").length;
-  const enProgreso = progresos.filter(p => p.estado === "En progreso").length;
+  const filtrados = filtro === "Todos"
+    ? conEstado
+    : conEstado.filter(p => p.estado === filtro);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
@@ -53,14 +58,17 @@ export default function Perfil() {
         <div>
           <h1 className="font-heading text-xl font-semibold">{user?.full_name || "Tejedora/Tejedor"}</h1>
           <p className="text-sm text-muted-foreground">{user?.email || "—"}</p>
+          {perfil?.nivel_actual && (
+            <span className="mt-1 inline-block text-xs font-medium bg-muted px-2.5 py-0.5 rounded-full">{perfil.nivel_actual}</span>
+          )}
         </div>
       </div>
 
       {/* Estadísticas */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-card border border-border rounded-2xl p-3 text-center">
-          <p className="text-2xl font-bold font-heading">{progresos.length}</p>
-          <p className="text-xs text-muted-foreground">Total</p>
+          <p className="text-2xl font-bold font-heading">{conEstado.length}</p>
+          <p className="text-xs text-muted-foreground">En lista</p>
         </div>
         <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-3 text-center">
           <p className="text-2xl font-bold font-heading text-emerald-600 dark:text-emerald-400">{completados}</p>
@@ -72,9 +80,9 @@ export default function Perfil() {
         </div>
       </div>
 
-      {/* Lista de proyectos */}
+      {/* Lista de proyectos con estado */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <h2 className="font-heading text-base font-semibold">Mis proyectos</h2>
           <div className="flex gap-1.5">
             {["Todos", "En progreso", "Completado"].map(f => (
@@ -95,7 +103,7 @@ export default function Perfil() {
         ) : filtrados.length === 0 ? (
           <div className="text-center py-12 space-y-3">
             <BookOpen size={36} className="mx-auto text-muted-foreground/40" />
-            <p className="text-muted-foreground text-sm">Todavía no tienes proyectos aquí.</p>
+            <p className="text-muted-foreground text-sm">Todavía no tienes proyectos iniciados.</p>
             <Link to="/proyectos" className="inline-block text-sm font-medium text-primary hover:underline">
               Explorar proyectos →
             </Link>
@@ -107,21 +115,14 @@ export default function Perfil() {
               const Icon = cfg.icon;
               return (
                 <div key={p.id} className={`border rounded-2xl p-4 space-y-3 ${cfg.bg}`}>
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-start gap-2.5">
-                      <Icon size={18} className={`flex-shrink-0 mt-0.5 ${cfg.color}`} />
-                      <div>
-                        <p className="font-medium text-sm">{p.proyecto_titulo}</p>
-                        {p.fecha_inicio && <p className="text-xs text-muted-foreground">Inicio: {p.fecha_inicio}</p>}
-                        {p.fecha_finalizacion && <p className="text-xs text-muted-foreground">Fin: {p.fecha_finalizacion}</p>}
-                      </div>
+                  <div className="flex items-start gap-2.5">
+                    <Icon size={18} className={`flex-shrink-0 mt-0.5 ${cfg.color}`} />
+                    <div>
+                      <p className="font-medium text-sm">{p.titulo}</p>
+                      {p.fecha_inicio && <p className="text-xs text-muted-foreground">Inicio: {p.fecha_inicio}</p>}
+                      {p.fecha_finalizacion && <p className="text-xs text-muted-foreground">Fin: {p.fecha_finalizacion}</p>}
                     </div>
-                    <button onClick={() => handleEliminar(p.id)} className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
-                      <Trash2 size={14} />
-                    </button>
                   </div>
-
-                  {/* Cambiar estado */}
                   {p.estado !== "Completado" && (
                     <div className="flex gap-2">
                       {p.estado === "Pendiente" && (

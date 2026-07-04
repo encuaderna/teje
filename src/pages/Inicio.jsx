@@ -25,7 +25,7 @@ export default function Inicio() {
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
-    base44.entities.ProgresoUsuario.filter({}).then(setProgresos).catch(() => {});
+    base44.entities.Proyecto.filter({}).then(setProgresos).catch(() => {});
   }, []);
 
   const completados = progresos.filter(p => p.estado === "Completado").length;

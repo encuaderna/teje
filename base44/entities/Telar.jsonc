@@ -27,12 +27,6 @@
         "type": "string"
       }
     },
-    "pasos_fabricacion": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "categoria": {
       "type": "string"
     },

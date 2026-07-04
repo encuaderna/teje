@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "proyecto_id": {
+      "type": "string"
+    },
+    "foto_url": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "fecha": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "proyecto_id",
+    "foto_url"
+  ],
+  "name": "FotoProyecto"
+}

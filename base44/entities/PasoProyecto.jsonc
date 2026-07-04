@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "properties": {
+    "proyecto_id": {
+      "type": "string"
+    },
+    "numero": {
+      "type": "integer"
+    },
+    "titulo": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "imagen_url": {
+      "type": "string"
+    },
+    "consejo": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "proyecto_id",
+    "numero",
+    "descripcion"
+  ],
+  "name": "PasoProyecto"
+}
