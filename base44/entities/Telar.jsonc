@@ -7,12 +7,6 @@
     "tipo": {
       "type": "string"
     },
-    "descripcion": {
-      "type": "string"
-    },
-    "imagen_url": {
-      "type": "string"
-    },
     "nivel_dificultad": {
       "type": "string",
       "enum": [
@@ -21,23 +15,47 @@
         "Avanzado"
       ]
     },
-    "materiales_fabricacion": {
+    "descripcion": {
+      "type": "string"
+    },
+    "materiales_necesarios": {
       "type": "array",
       "items": {
         "type": "string"
       }
     },
-    "categoria": {
+    "herramientas_necesarias": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pasos_fabricacion": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "consejos_armado": {
       "type": "string"
     },
-    "tiempo_estimado": {
+    "errores_frecuentes": {
+      "type": "string"
+    },
+    "usos_recomendados": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "imagen_url": {
       "type": "string"
     }
   },
   "required": [
     "nombre",
-    "descripcion",
-    "nivel_dificultad"
+    "nivel_dificultad",
+    "descripcion"
   ],
   "name": "Telar"
 }
