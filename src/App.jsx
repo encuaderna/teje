@@ -13,6 +13,7 @@ import Proyectos from '@/pages/Proyectos';
 import Errores from '@/pages/Errores';
 import Materiales from '@/pages/Materiales';
 import Perfil from '@/pages/Perfil';
+import Notas from '@/pages/Notas';
 import Login from '@/pages/Login';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
           <Route path="/proyectos" element={<Proyectos />} />
           <Route path="/errores" element={<Errores />} />
           <Route path="/materiales" element={<Materiales />} />
+          <Route path="/notas" element={<Notas />} />
           <Route path="/perfil" element={<Perfil />} />
         </Route>
       </Route>
