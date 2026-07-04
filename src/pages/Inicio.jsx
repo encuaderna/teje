@@ -66,17 +66,21 @@ export default function Inicio() {
   return (
     <div className="max-w-xl mx-auto px-4 py-8 space-y-8">
 
-      {/* Bienvenida */}
-      <div className="space-y-1">
-        <p className="text-sm text-muted-foreground font-medium">
-          Bienvenida/o{user?.full_name ? `, ${user.full_name.split(" ")[0]}` : ""} 👋
-        </p>
-        <h1 className="font-heading text-3xl font-semibold text-foreground leading-tight">
-          Guía de Telares<br />y Tejidos
-        </h1>
-        <p className="text-muted-foreground text-sm mt-1 leading-relaxed">
-          Tu guía paso a paso para aprender el arte del tejido artesanal.
-        </p>
+      {/* Banner artesanal */}
+      <div className="rounded-2xl overflow-hidden relative h-44 bg-amber-100 dark:bg-amber-950/30">
+        <img
+          src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80"
+          alt="Telar artesanal con hilos de colores"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-5">
+          <p className="text-white/80 text-xs font-medium">
+            Bienvenida/o{user?.full_name ? `, ${user.full_name.split(" ")[0]}` : ""} 👋
+          </p>
+          <h1 className="font-heading text-2xl font-semibold text-white leading-tight">
+            Guía de Telares<br />y Tejidos
+          </h1>
+        </div>
       </div>
 
       {/* Tip del día */}
