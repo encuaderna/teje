@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "properties": {
+    "nombre": {
+      "type": "string"
+    },
+    "tipo": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "imagen_url": {
+      "type": "string"
+    },
+    "nivel_dificultad": {
+      "type": "string",
+      "enum": [
+        "Principiante",
+        "Intermedio",
+        "Avanzado"
+      ]
+    },
+    "materiales_fabricacion": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pasos_fabricacion": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "categoria": {
+      "type": "string"
+    },
+    "tiempo_estimado": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "nombre",
+    "descripcion",
+    "nivel_dificultad"
+  ],
+  "name": "Telar"
+}

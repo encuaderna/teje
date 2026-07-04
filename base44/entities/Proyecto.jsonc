@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "properties": {
+    "titulo": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "nivel": {
+      "type": "string",
+      "enum": [
+        "Principiante",
+        "Intermedio",
+        "Avanzado"
+      ]
+    },
+    "materiales_necesarios": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pasos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "telar_recomendado": {
+      "type": "string"
+    },
+    "imagen_url": {
+      "type": "string"
+    },
+    "tiempo_estimado": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "titulo",
+    "descripcion",
+    "nivel"
+  ],
+  "name": "Proyecto"
+}

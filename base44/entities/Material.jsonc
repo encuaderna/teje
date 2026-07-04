@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "properties": {
+    "nombre": {
+      "type": "string"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "Hilo",
+        "Lana",
+        "Fibra natural",
+        "Fibra sint\u00e9tica",
+        "Otro"
+      ]
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "usos_recomendados": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "imagen_url": {
+      "type": "string"
+    },
+    "consejos": {
+      "type": "string"
+    },
+    "textura": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "nombre",
+    "tipo",
+    "descripcion"
+  ],
+  "name": "Material"
+}

@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "titulo": {
+      "type": "string"
+    },
+    "descripcion_error": {
+      "type": "string"
+    },
+    "causa": {
+      "type": "string"
+    },
+    "solucion": {
+      "type": "string"
+    },
+    "tecnica_relacionada": {
+      "type": "string"
+    },
+    "imagen_url": {
+      "type": "string"
+    },
+    "nivel": {
+      "type": "string",
+      "enum": [
+        "Principiante",
+        "Intermedio",
+        "Avanzado",
+        "Todos"
+      ]
+    }
+  },
+  "required": [
+    "titulo",
+    "descripcion_error",
+    "causa",
+    "solucion"
+  ],
+  "name": "ErrorFrecuente"
+}
