@@ -7,6 +7,9 @@
     "descripcion": {
       "type": "string"
     },
+    "objetivo": {
+      "type": "string"
+    },
     "nivel": {
       "type": "string",
       "enum": [
@@ -42,6 +45,36 @@
     "fecha_finalizacion": {
       "type": "string",
       "format": "date"
+    },
+    "materiales": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pasos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "errores_comunes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "soluciones": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "etapas_progreso": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [
