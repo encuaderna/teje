@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Clock, ChevronDown, ChevronUp, CheckCircle2, Plus, Layers, Target, Package, ListOrdered, AlertTriangle, Lightbulb, BarChart3 } from "lucide-react";
+import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Target, Package, ListOrdered, AlertTriangle, Lightbulb, BarChart3 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const nivelColor = {
   Principiante: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400",
   Intermedio: "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
   Avanzado: "bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400",
-};
-
-const sectionIcon = {
-  objetivo: Target,
-  materiales: Package,
-  pasos: ListOrdered,
-  errores: AlertTriangle,
-  soluciones: Lightbulb,
-  etapas: BarChart3,
 };
 
 function SeccionDetalle({ icon: Icon, titulo, color, children }) {
@@ -30,8 +21,83 @@ function SeccionDetalle({ icon: Icon, titulo, color, children }) {
   );
 }
 
-function ProyectoCard({ proyecto, onAgregar }) {
+// Devuelve las etapas completadas guardadas en localStorage
+function getEtapasCompletadas(proyectoId) {
+  try { return JSON.parse(localStorage.getItem(`etapas_${proyectoId}`) || "[]"); } catch { return []; }
+}
+function saveEtapasCompletadas(proyectoId, etapas) {
+  localStorage.setItem(`etapas_${proyectoId}`, JSON.stringify(etapas));
+}
+
+function BarraProgreso({ porcentaje }) {
+  const color = porcentaje === 100 ? "bg-emerald-500" : porcentaje >= 50 ? "bg-blue-500" : "bg-amber-400";
+  return (
+    <div className="space-y-1">
+      <div className="flex justify-between text-xs text-muted-foreground">
+        <span>Progreso por etapas</span>
+        <span className="font-semibold text-foreground">{porcentaje}%</span>
+      </div>
+      <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+        <div className={`h-full rounded-full transition-all duration-500 ${color}`} style={{ width: `${porcentaje}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function EtapasInteractivas({ proyecto, etapasCompletadas, onToggleEtapa }) {
+  if (!proyecto.etapas_progreso?.length) return null;
+  const total = proyecto.etapas_progreso.length;
+
+  return (
+    <SeccionDetalle icon={BarChart3} titulo="Etapas de progreso" color="text-violet-500">
+      <ol className="space-y-2">
+        {proyecto.etapas_progreso.map((etapa, i) => {
+          const hecha = etapasCompletadas.includes(i);
+          return (
+            <li key={i}>
+              <button
+                onClick={() => onToggleEtapa(i)}
+                className="flex items-start gap-3 text-left w-full group"
+              >
+                <span className={`flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all mt-0.5
+                  ${hecha
+                    ? "bg-emerald-500 border-emerald-500 text-white"
+                    : "border-muted-foreground/40 text-muted-foreground group-hover:border-violet-400"}`}>
+                  {hecha ? <CheckCircle2 size={13} /> : <Circle size={11} />}
+                </span>
+                <span className={`text-sm pt-0.5 leading-relaxed transition-colors
+                  ${hecha ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                  {etapa}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="text-xs text-muted-foreground mt-1">Toca cada etapa para marcarla como completada.</p>
+    </SeccionDetalle>
+  );
+}
+
+function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
   const [expandido, setExpandido] = useState(false);
+  const [etapasCompletadas, setEtapasCompletadas] = useState(() => getEtapasCompletadas(proyecto.id));
+
+  const total = proyecto.etapas_progreso?.length || 0;
+  const porcentaje = total > 0 ? Math.round((etapasCompletadas.length / total) * 100) : 0;
+
+  const handleToggleEtapa = (idx) => {
+    const siguiente = etapasCompletadas.includes(idx)
+      ? etapasCompletadas.filter(e => e !== idx)
+      : [...etapasCompletadas, idx];
+    setEtapasCompletadas(siguiente);
+    saveEtapasCompletadas(proyecto.id, siguiente);
+
+    // Si se completan todas y el proyecto estaba en progreso, actualizar estado
+    if (siguiente.length === total && total > 0 && proyecto.estado === "En progreso") {
+      onActualizar(proyecto.id, { estado: "Completado", fecha_finalizacion: new Date().toISOString().split("T")[0] });
+    }
+  };
 
   return (
     <div className="bg-card border border-border rounded-2xl overflow-hidden">
@@ -60,6 +126,11 @@ function ProyectoCard({ proyecto, onAgregar }) {
             </span>
           )}
         </div>
+
+        {/* Barra de progreso (solo si tiene estado y etapas) */}
+        {proyecto.estado && total > 0 && (
+          <BarraProgreso porcentaje={porcentaje} />
+        )}
 
         {/* Estado / botón iniciar */}
         {proyecto.estado ? (
@@ -93,16 +164,14 @@ function ProyectoCard({ proyecto, onAgregar }) {
         {expandido && (
           <div className="space-y-5 pt-3 border-t border-border">
 
-            {/* Objetivo */}
             {proyecto.objetivo && (
-              <SeccionDetalle icon={sectionIcon.objetivo} titulo="Objetivo" color="text-primary">
+              <SeccionDetalle icon={Target} titulo="Objetivo" color="text-primary">
                 <p className="text-sm leading-relaxed">{proyecto.objetivo}</p>
               </SeccionDetalle>
             )}
 
-            {/* Materiales */}
             {proyecto.materiales?.length > 0 && (
-              <SeccionDetalle icon={sectionIcon.materiales} titulo="Materiales necesarios" color="text-amber-500">
+              <SeccionDetalle icon={Package} titulo="Materiales necesarios" color="text-amber-500">
                 <ul className="space-y-1">
                   {proyecto.materiales.map((m, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
@@ -113,9 +182,8 @@ function ProyectoCard({ proyecto, onAgregar }) {
               </SeccionDetalle>
             )}
 
-            {/* Pasos */}
             {proyecto.pasos?.length > 0 && (
-              <SeccionDetalle icon={sectionIcon.pasos} titulo="Pasos a seguir" color="text-blue-500">
+              <SeccionDetalle icon={ListOrdered} titulo="Pasos a seguir" color="text-blue-500">
                 <ol className="space-y-2">
                   {proyecto.pasos.map((paso, i) => (
                     <li key={i} className="flex gap-3 text-sm">
@@ -127,9 +195,8 @@ function ProyectoCard({ proyecto, onAgregar }) {
               </SeccionDetalle>
             )}
 
-            {/* Errores comunes */}
             {proyecto.errores_comunes?.length > 0 && (
-              <SeccionDetalle icon={sectionIcon.errores} titulo="Errores frecuentes" color="text-rose-500">
+              <SeccionDetalle icon={AlertTriangle} titulo="Errores frecuentes" color="text-rose-500">
                 <ul className="space-y-1">
                   {proyecto.errores_comunes.map((e, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-rose-700 dark:text-rose-400">
@@ -140,9 +207,8 @@ function ProyectoCard({ proyecto, onAgregar }) {
               </SeccionDetalle>
             )}
 
-            {/* Soluciones */}
             {proyecto.soluciones?.length > 0 && (
-              <SeccionDetalle icon={sectionIcon.soluciones} titulo="Soluciones y consejos" color="text-emerald-500">
+              <SeccionDetalle icon={Lightbulb} titulo="Soluciones y consejos" color="text-emerald-500">
                 <ul className="space-y-1">
                   {proyecto.soluciones.map((s, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-emerald-700 dark:text-emerald-400">
@@ -153,22 +219,12 @@ function ProyectoCard({ proyecto, onAgregar }) {
               </SeccionDetalle>
             )}
 
-            {/* Etapas de progreso */}
-            {proyecto.etapas_progreso?.length > 0 && (
-              <SeccionDetalle icon={sectionIcon.etapas} titulo="Etapas de progreso" color="text-violet-500">
-                <ol className="space-y-2">
-                  {proyecto.etapas_progreso.map((etapa, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm">
-                      <span className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center text-[10px] font-bold
-                        ${proyecto.estado === "Completado" ? "bg-emerald-500 border-emerald-500 text-white" : "border-muted-foreground text-muted-foreground"}`}>
-                        {i + 1}
-                      </span>
-                      <span className="pt-0.5 leading-relaxed text-muted-foreground">{etapa}</span>
-                    </li>
-                  ))}
-                </ol>
-              </SeccionDetalle>
-            )}
+            {/* Etapas interactivas con ticks */}
+            <EtapasInteractivas
+              proyecto={proyecto}
+              etapasCompletadas={etapasCompletadas}
+              onToggleEtapa={handleToggleEtapa}
+            />
           </div>
         )}
       </div>
@@ -198,6 +254,14 @@ export default function Proyectos() {
     toast({ title: "¡Iniciado!", description: `"${proyecto.titulo}" está en tu lista de progreso.` });
   };
 
+  const handleActualizar = async (id, datos) => {
+    const actualizado = await base44.entities.Proyecto.update(id, datos);
+    setProyectos(prev => prev.map(p => p.id === id ? actualizado : p));
+    if (datos.estado === "Completado") {
+      toast({ title: "¡Proyecto completado! 🎉", description: "Terminaste todas las etapas. ¡Excelente trabajo!" });
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <div>
@@ -224,7 +288,9 @@ export default function Proyectos() {
         <div className="text-center py-12 text-muted-foreground text-sm">No hay proyectos para este nivel todavía.</div>
       ) : (
         <div className="space-y-4">
-          {filtrados.map(p => <ProyectoCard key={p.id} proyecto={p} onAgregar={handleAgregar} />)}
+          {filtrados.map(p => (
+            <ProyectoCard key={p.id} proyecto={p} onAgregar={handleAgregar} onActualizar={handleActualizar} />
+          ))}
         </div>
       )}
     </div>
