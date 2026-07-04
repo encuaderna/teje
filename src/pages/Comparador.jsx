@@ -4,12 +4,12 @@ import { Check, X, Minus } from "lucide-react";
 
 const CAMPOS = [
   { key: "nivel_dificultad", label: "Dificultad" },
-  { key: "portabilidad", label: "Portabilidad" },
-  { key: "tamano_proyecto", label: "Tamaño del proyecto" },
-  { key: "tiempo_fabricacion", label: "Tiempo de fabricación" },
+  { key: "tipo", label: "Tipo de telar" },
   { key: "materiales_necesarios", label: "Materiales" },
+  { key: "herramientas_necesarias", label: "Herramientas" },
   { key: "usos_recomendados", label: "Usos recomendados" },
   { key: "consejos_armado", label: "Consejo inicial" },
+  { key: "errores_frecuentes", label: "Errores frecuentes" },
 ];
 
 const nivelColor = {
@@ -135,7 +135,7 @@ export default function Comparador() {
         </div>
       ) : (
         <div className="text-center py-16 border-2 border-dashed border-border rounded-2xl">
-          <p className="text-4xl mb-3">🪡</p>
+          <p className="text-4xl mb-3">⚖️</p>
           <p className="text-muted-foreground text-sm">Seleccioná al menos 2 telares para ver la comparación.</p>
         </div>
       )}

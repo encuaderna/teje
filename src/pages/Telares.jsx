@@ -35,7 +35,7 @@ const nivelConfig = {
   Avanzado: { cls: "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300", emoji: "🌺" },
 };
 
-function TelarCard({ telar, favoritos, onToggleFav, vistos }) {
+function TelarCard({ telar, favoritos, onToggleFav, vistos, onVisto }) {
   const [expandido, setExpandido] = useState(false);
   const nivel = nivelConfig[telar.nivel_dificultad] || nivelConfig.Principiante;
   const esFav = favoritos.includes(telar.id);
@@ -47,6 +47,7 @@ function TelarCard({ telar, favoritos, onToggleFav, vistos }) {
     if (nuevo) {
       addReciente(telar.id);
       addVisto(telar.id);
+      onVisto(telar.id);
     }
   };
 
@@ -210,11 +211,9 @@ export default function Telares() {
     base44.entities.Telar.list().then(data => { setTelares(data); setCargando(false); });
   }, []);
 
-  // Refrescar vistos cuando se expande una ficha
-  useEffect(() => {
-    const interval = setInterval(() => setVistos(getVistos()), 2000);
-    return () => clearInterval(interval);
-  }, []);
+  const handleVisto = (id) => {
+    setVistos(prev => prev.includes(id) ? prev : [...prev, id]);
+  };
 
   const handleToggleFav = (id) => {
     setFavoritos(prev => {
@@ -327,6 +326,7 @@ export default function Telares() {
               favoritos={favoritos}
               onToggleFav={handleToggleFav}
               vistos={vistos}
+              onVisto={handleVisto}
             />
           ))}
         </div>
