@@ -14,6 +14,9 @@ import Errores from '@/pages/Errores';
 import Materiales from '@/pages/Materiales';
 import Perfil from '@/pages/Perfil';
 import Notas from '@/pages/Notas';
+import Quiz from '@/pages/Quiz';
+import Comparador from '@/pages/Comparador';
+import MisTelares from '@/pages/MisTelares';
 import Login from '@/pages/Login';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
@@ -48,6 +51,9 @@ const AuthenticatedApp = () => {
           <Route path="/errores" element={<Errores />} />
           <Route path="/materiales" element={<Materiales />} />
           <Route path="/notas" element={<Notas />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/comparador" element={<Comparador />} />
+          <Route path="/mis-telares" element={<MisTelares />} />
           <Route path="/perfil" element={<Perfil />} />
         </Route>
       </Route>

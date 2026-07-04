@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Layers, BookOpen, AlertTriangle, Package, ArrowRight } from "lucide-react";
+import { Layers, BookOpen, AlertTriangle, Package, ArrowRight, Sparkles, Scale, Heart } from "lucide-react";
 
 const tips = [
   "La tensión uniforme es el secreto de un tejido perfecto. Practica en trozos pequeños antes de un proyecto grande.",
@@ -50,18 +50,30 @@ const secciones = [
   },
 ];
 
+function getVistos() {
+  try { return JSON.parse(localStorage.getItem("telares_vistos") || "[]"); } catch { return []; }
+}
+function getFavoritos() {
+  try { return JSON.parse(localStorage.getItem("telares_favoritos") || "[]"); } catch { return []; }
+}
+
 export default function Inicio() {
   const [progresos, setProgresos] = useState([]);
   const [tip] = useState(() => tips[Math.floor(Math.random() * tips.length)]);
   const [user, setUser] = useState(null);
+  const [totalTelares, setTotalTelares] = useState(0);
+  const vistos = getVistos();
+  const favoritos = getFavoritos();
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
     base44.entities.Proyecto.filter({}).then(setProgresos).catch(() => {});
+    base44.entities.Telar.list().then(data => setTotalTelares(data.length)).catch(() => {});
   }, []);
 
   const completados = progresos.filter(p => p.estado === "Completado").length;
   const enProgreso = progresos.filter(p => p.estado === "En progreso").length;
+  const progresoTelares = totalTelares > 0 ? Math.round((vistos.length / totalTelares) * 100) : 0;
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8 space-y-8">
@@ -83,14 +95,57 @@ export default function Inicio() {
         </div>
       </div>
 
+      {/* Empieza aquí — solo si no ha visto ningún telar */}
+      {vistos.length === 0 && (
+        <div className="bg-primary/5 border-2 border-primary/20 rounded-2xl p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles size={18} className="text-primary" />
+            <h2 className="font-heading text-lg font-semibold text-foreground">Empieza aquí</h2>
+          </div>
+          <p className="text-sm text-foreground/80 leading-relaxed">
+            Si es tu primera vez, el <strong>Telar de Cartón</strong> es el punto de partida ideal: no necesita inversión, se hace con materiales caseros y te enseña todos los fundamentos del tejido.
+          </p>
+          <div className="flex gap-2 flex-wrap">
+            <Link
+              to="/quiz"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
+            >
+              🎯 ¿Qué telar me conviene? <ArrowRight size={14} />
+            </Link>
+            <Link
+              to="/telares"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-muted text-foreground text-sm font-semibold hover:bg-muted/80 transition-colors"
+            >
+              Ver todos los telares
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Tip del día */}
       <div className="bg-accent border border-amber-200 dark:border-amber-800 rounded-2xl p-5">
         <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">💡 Consejo del día</p>
         <p className="text-sm text-foreground leading-relaxed">{tip}</p>
       </div>
 
+      {/* Herramientas rápidas */}
+      <div className="grid grid-cols-3 gap-2">
+        <Link to="/quiz" className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-950/40 transition-colors text-center">
+          <span className="text-2xl">🎯</span>
+          <p className="text-xs font-semibold text-amber-800 dark:text-amber-300 leading-tight">Quiz de telares</p>
+        </Link>
+        <Link to="/comparador" className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 dark:hover:bg-violet-950/40 transition-colors text-center">
+          <Scale size={22} className="text-violet-600 dark:text-violet-400" />
+          <p className="text-xs font-semibold text-violet-800 dark:text-violet-300 leading-tight">Comparador</p>
+        </Link>
+        <Link to="/mis-telares" className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-950/40 transition-colors text-center">
+          <Heart size={22} className="text-rose-500" />
+          <p className="text-xs font-semibold text-rose-700 dark:text-rose-300 leading-tight">Mis favoritos</p>
+        </Link>
+      </div>
+
       {/* Resumen progreso */}
-      {progresos.length > 0 && (
+      {(progresos.length > 0 || vistos.length > 0) && (
         <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-heading text-base font-semibold">Mi avance</h2>
@@ -101,18 +156,32 @@ export default function Inicio() {
               Ver todo <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </div>
+
+          {/* Progreso de telares estudiados */}
+          {totalTelares > 0 && (
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Telares estudiados</span>
+                <span className="font-semibold text-foreground">{vistos.length} / {totalTelares}</span>
+              </div>
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${progresoTelares}%` }} />
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="bg-muted/60 rounded-xl p-3">
               <p className="text-2xl font-bold font-heading text-foreground">{progresos.length}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Total</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Proyectos</p>
             </div>
             <div className="bg-emerald-50 dark:bg-emerald-950/30 rounded-xl p-3">
               <p className="text-2xl font-bold font-heading text-emerald-700 dark:text-emerald-400">{completados}</p>
               <p className="text-xs text-muted-foreground mt-0.5">Completados</p>
             </div>
-            <div className="bg-blue-50 dark:bg-blue-950/30 rounded-xl p-3">
-              <p className="text-2xl font-bold font-heading text-blue-700 dark:text-blue-400">{enProgreso}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">En progreso</p>
+            <div className="bg-rose-50 dark:bg-rose-950/30 rounded-xl p-3">
+              <p className="text-2xl font-bold font-heading text-rose-600 dark:text-rose-400">{favoritos.length}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Favoritos</p>
             </div>
           </div>
         </div>

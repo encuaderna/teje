@@ -1,24 +1,79 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { ChevronDown, ChevronUp, Wrench, Package, Search } from "lucide-react";
+import { ChevronDown, ChevronUp, Wrench, Package, Search, Heart, Eye, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+
+// Favoritos y recientes en localStorage
+function getFavoritos() {
+  try { return JSON.parse(localStorage.getItem("telares_favoritos") || "[]"); } catch { return []; }
+}
+function saveFavoritos(ids) {
+  localStorage.setItem("telares_favoritos", JSON.stringify(ids));
+}
+function addReciente(id) {
+  try {
+    const prev = JSON.parse(localStorage.getItem("telares_recientes") || "[]");
+    const next = [id, ...prev.filter(i => i !== id)].slice(0, 10);
+    localStorage.setItem("telares_recientes", JSON.stringify(next));
+  } catch {}
+}
+
+// Progreso de aprendizaje (telares que se han expandido/leído)
+function getVistos() {
+  try { return JSON.parse(localStorage.getItem("telares_vistos") || "[]"); } catch { return []; }
+}
+function addVisto(id) {
+  try {
+    const prev = JSON.parse(localStorage.getItem("telares_vistos") || "[]");
+    if (!prev.includes(id)) localStorage.setItem("telares_vistos", JSON.stringify([...prev, id]));
+  } catch {}
+}
 
 const nivelConfig = {
   Principiante: { cls: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300", emoji: "🌱" },
-  Intermedio:   { cls: "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300", emoji: "🌿" },
-  Avanzado:     { cls: "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300", emoji: "🌺" },
+  Intermedio: { cls: "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300", emoji: "🌿" },
+  Avanzado: { cls: "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300", emoji: "🌺" },
 };
 
-function TelarCard({ telar }) {
+function TelarCard({ telar, favoritos, onToggleFav, vistos }) {
   const [expandido, setExpandido] = useState(false);
   const nivel = nivelConfig[telar.nivel_dificultad] || nivelConfig.Principiante;
+  const esFav = favoritos.includes(telar.id);
+  const visto = vistos.includes(telar.id);
+
+  const handleExpand = () => {
+    const nuevo = !expandido;
+    setExpandido(nuevo);
+    if (nuevo) {
+      addReciente(telar.id);
+      addVisto(telar.id);
+    }
+  };
 
   return (
     <article className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-      {telar.imagen_url && (
-        <img src={telar.imagen_url} alt={telar.nombre} className="w-full h-44 object-cover" />
-      )}
-      <div className="p-5 space-y-4">
+      <div className="relative">
+        {telar.imagen_url && (
+          <img src={telar.imagen_url} alt={telar.nombre} className="w-full h-44 object-cover" />
+        )}
+        {/* Botón favorito */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggleFav(telar.id); }}
+          aria-label={esFav ? "Quitar de favoritos" : "Guardar en favoritos"}
+          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center shadow transition-all
+            ${esFav ? "bg-rose-500 text-white" : "bg-black/30 text-white hover:bg-rose-500"}`}
+        >
+          <Heart size={16} fill={esFav ? "currentColor" : "none"} />
+        </button>
+        {/* Indicador visto */}
+        {visto && (
+          <div className="absolute top-3 left-3 bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1">
+            <Eye size={11} /> Estudiado
+          </div>
+        )}
+      </div>
 
+      <div className="p-5 space-y-4">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -41,9 +96,9 @@ function TelarCard({ telar }) {
           </div>
         )}
 
-        {/* Botón expandir — grande y claro */}
+        {/* Botón expandir */}
         <button
-          onClick={() => setExpandido(!expandido)}
+          onClick={handleExpand}
           aria-expanded={expandido}
           className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-sm transition-colors border border-primary/20"
         >
@@ -125,6 +180,17 @@ function TelarCard({ telar }) {
                 <p className="text-sm text-foreground leading-relaxed">{telar.errores_frecuentes}</p>
               </div>
             )}
+
+            {/* Siguiente paso sugerido */}
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold text-primary uppercase tracking-wider mb-0.5">¿Qué sigue?</p>
+                <p className="text-sm text-foreground">Buscá un proyecto para este telar en la sección Proyectos.</p>
+              </div>
+              <Link to="/proyectos" className="flex-shrink-0 flex items-center gap-1 text-primary font-semibold text-sm hover:underline">
+                Ver <ArrowRight size={13} />
+              </Link>
+            </div>
           </div>
         )}
       </div>
@@ -137,10 +203,26 @@ export default function Telares() {
   const [cargando, setCargando] = useState(true);
   const [filtro, setFiltro] = useState("Todos");
   const [busqueda, setBusqueda] = useState("");
+  const [favoritos, setFavoritos] = useState(getFavoritos);
+  const [vistos, setVistos] = useState(getVistos);
 
   useEffect(() => {
     base44.entities.Telar.list().then(data => { setTelares(data); setCargando(false); });
   }, []);
+
+  // Refrescar vistos cuando se expande una ficha
+  useEffect(() => {
+    const interval = setInterval(() => setVistos(getVistos()), 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleToggleFav = (id) => {
+    setFavoritos(prev => {
+      const nuevos = prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id];
+      saveFavoritos(nuevos);
+      return nuevos;
+    });
+  };
 
   const niveles = ["Todos", "Principiante", "Intermedio", "Avanzado"];
   const filtrados = telares
@@ -151,11 +233,52 @@ export default function Telares() {
       return t.nombre?.toLowerCase().includes(q) || t.tipo?.toLowerCase().includes(q) || t.descripcion?.toLowerCase().includes(q);
     });
 
+  const totalTelares = telares.length;
+  const totalVistos = vistos.filter(id => telares.some(t => t.id === id)).length;
+  const progresoPorc = totalTelares > 0 ? Math.round((totalVistos / totalTelares) * 100) : 0;
+
   return (
     <div className="max-w-xl mx-auto px-4 py-8 space-y-6">
       <div>
         <h1 className="font-heading text-3xl font-semibold text-foreground">Tipos de Telares</h1>
         <p className="text-muted-foreground text-sm mt-1">Conocé cada telar y aprendé a fabricarlo vos mismo.</p>
+      </div>
+
+      {/* Progreso de aprendizaje */}
+      {totalTelares > 0 && (
+        <div className="bg-card border border-border rounded-2xl p-4 space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-semibold text-foreground">Progreso de aprendizaje</span>
+            <span className="text-muted-foreground text-xs">{totalVistos} de {totalTelares} telares estudiados</span>
+          </div>
+          <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-700 ${progresoPorc === 100 ? "bg-emerald-500" : "bg-primary"}`}
+              style={{ width: `${progresoPorc}%` }}
+            />
+          </div>
+          {progresoPorc === 100 && (
+            <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">🎉 ¡Completaste todos los telares!</p>
+          )}
+        </div>
+      )}
+
+      {/* Acciones rápidas */}
+      <div className="grid grid-cols-2 gap-2">
+        <Link to="/quiz" className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-950/40 transition-colors">
+          <span className="text-xl">🎯</span>
+          <div>
+            <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">¿Cuál me conviene?</p>
+            <p className="text-xs text-muted-foreground">Quiz rápido</p>
+          </div>
+        </Link>
+        <Link to="/comparador" className="flex items-center gap-2 p-3 rounded-xl bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 dark:hover:bg-violet-950/40 transition-colors">
+          <span className="text-xl">⚖️</span>
+          <div>
+            <p className="text-xs font-semibold text-violet-800 dark:text-violet-300">Comparar telares</p>
+            <p className="text-xs text-muted-foreground">Hasta 3 a la vez</p>
+          </div>
+        </Link>
       </div>
 
       {/* Barra de búsqueda */}
@@ -170,7 +293,7 @@ export default function Telares() {
         />
       </div>
 
-      {/* Filtros accesibles */}
+      {/* Filtros */}
       <div role="group" aria-label="Filtrar por nivel" className="flex gap-2 overflow-x-auto pb-1">
         {niveles.map(n => (
           <button
@@ -197,7 +320,15 @@ export default function Telares() {
         </p>
       ) : (
         <div className="space-y-5">
-          {filtrados.map(t => <TelarCard key={t.id} telar={t} />)}
+          {filtrados.map(t => (
+            <TelarCard
+              key={t.id}
+              telar={t}
+              favoritos={favoritos}
+              onToggleFav={handleToggleFav}
+              vistos={vistos}
+            />
+          ))}
         </div>
       )}
     </div>
