@@ -109,7 +109,7 @@ export default function Materiales() {
       setMateriales(mats);
       setProyectos(projs);
       setCargando(false);
-    });
+    }).catch(() => setCargando(false)); // evita skeleton infinito si falla la carga
   }, []);
 
   const handleToggle = (id) => {

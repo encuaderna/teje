@@ -85,17 +85,20 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
   const [etapasCompletadas, setEtapasCompletadas] = useState(() => getEtapasCompletadas(proyecto.id));
 
   const total = proyecto.etapas_progreso?.length || 0;
-  const porcentaje = total > 0 ? Math.round((etapasCompletadas.length / total) * 100) : 0;
+  // Solo contar etapas con índice válido para evitar porcentaje > 100
+  const completadasValidas = etapasCompletadas.filter(i => i >= 0 && i < total);
+  const porcentaje = total > 0 ? Math.min(100, Math.round((completadasValidas.length / total) * 100)) : 0;
 
   const handleToggleEtapa = (idx) => {
     const siguiente = etapasCompletadas.includes(idx)
       ? etapasCompletadas.filter(e => e !== idx)
-      : [...etapasCompletadas, idx];
+      : [...new Set([...etapasCompletadas, idx])]; // dedup por si acaso
     setEtapasCompletadas(siguiente);
     saveEtapasCompletadas(proyecto.id, siguiente);
 
-    // Si se completan todas y el proyecto estaba en progreso, actualizar estado
-    if (siguiente.length === total && total > 0 && proyecto.estado === "En progreso") {
+    // Auto-completar solo si se marcan TODAS las etapas válidas
+    const completadasValidas = siguiente.filter(i => i >= 0 && i < total);
+    if (completadasValidas.length === total && total > 0 && proyecto.estado === "En progreso") {
       onActualizar(proyecto.id, { estado: "Completado", fecha_finalizacion: new Date().toISOString().split("T")[0] });
     }
   };

@@ -19,12 +19,13 @@ export default function Perfil() {
   const { toast } = useToast();
 
   useEffect(() => {
-    Promise.all([
-      base44.auth.me(),
-      base44.entities.Proyecto.filter({}),
-      base44.entities.UsuarioPerfil.filter({})
-    ]).then(([u, p, up]) => {
+    base44.auth.me().then(u => {
       setUser(u);
+      return Promise.all([
+        base44.entities.Proyecto.filter({ created_by_id: u.id }),
+        base44.entities.UsuarioPerfil.filter({ created_by_id: u.id }),
+      ]);
+    }).then(([p, up]) => {
       setProyectos(p);
       setPerfil(up[0] || null);
       setCargando(false);
