@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { ChevronDown, ChevronUp, Wrench, Package } from "lucide-react";
+import { ChevronDown, ChevronUp, Wrench, Package, Search } from "lucide-react";
 
 const nivelConfig = {
   Principiante: { cls: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300", emoji: "🌱" },
@@ -136,19 +136,38 @@ export default function Telares() {
   const [telares, setTelares] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [filtro, setFiltro] = useState("Todos");
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     base44.entities.Telar.list().then(data => { setTelares(data); setCargando(false); });
   }, []);
 
   const niveles = ["Todos", "Principiante", "Intermedio", "Avanzado"];
-  const filtrados = filtro === "Todos" ? telares : telares.filter(t => t.nivel_dificultad === filtro);
+  const filtrados = telares
+    .filter(t => filtro === "Todos" || t.nivel_dificultad === filtro)
+    .filter(t => {
+      if (!busqueda.trim()) return true;
+      const q = busqueda.toLowerCase();
+      return t.nombre?.toLowerCase().includes(q) || t.tipo?.toLowerCase().includes(q) || t.descripcion?.toLowerCase().includes(q);
+    });
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8 space-y-6">
       <div>
         <h1 className="font-heading text-3xl font-semibold text-foreground">Tipos de Telares</h1>
         <p className="text-muted-foreground text-sm mt-1">Conocé cada telar y aprendé a fabricarlo vos mismo.</p>
+      </div>
+
+      {/* Barra de búsqueda */}
+      <div className="relative">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" aria-hidden="true" />
+        <input
+          type="search"
+          placeholder="Buscar por nombre o tipo…"
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-card text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
       </div>
 
       {/* Filtros accesibles */}
@@ -173,7 +192,9 @@ export default function Telares() {
           {[1, 2, 3].map(i => <div key={i} className="h-48 bg-muted animate-pulse rounded-2xl" />)}
         </div>
       ) : filtrados.length === 0 ? (
-        <p className="text-center py-12 text-muted-foreground text-sm">No hay telares en este nivel todavía.</p>
+        <p className="text-center py-12 text-muted-foreground text-sm">
+          {busqueda ? `Sin resultados para "${busqueda}".` : "No hay telares en este nivel todavía."}
+        </p>
       ) : (
         <div className="space-y-5">
           {filtrados.map(t => <TelarCard key={t.id} telar={t} />)}

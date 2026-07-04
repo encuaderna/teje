@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Target, Package, ListOrdered, AlertTriangle, Lightbulb, BarChart3 } from "lucide-react";
+import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Target, Package, ListOrdered, AlertTriangle, Lightbulb, BarChart3, Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const nivelColor = {
@@ -238,6 +238,7 @@ export default function Proyectos() {
   const [proyectos, setProyectos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [nivel, setNivel] = useState("Todos");
+  const [busqueda, setBusqueda] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -245,7 +246,13 @@ export default function Proyectos() {
   }, []);
 
   const niveles = ["Todos", "Principiante", "Intermedio", "Avanzado"];
-  const filtrados = nivel === "Todos" ? proyectos : proyectos.filter(p => p.nivel === nivel);
+  const filtrados = proyectos
+    .filter(p => nivel === "Todos" || p.nivel === nivel)
+    .filter(p => {
+      if (!busqueda.trim()) return true;
+      const q = busqueda.toLowerCase();
+      return p.titulo?.toLowerCase().includes(q) || p.descripcion?.toLowerCase().includes(q) || p.telar_recomendado?.toLowerCase().includes(q);
+    });
 
   const handleAgregar = async (proyecto) => {
     const actualizado = await base44.entities.Proyecto.update(proyecto.id, {
@@ -271,6 +278,18 @@ export default function Proyectos() {
         <p className="text-muted-foreground text-sm mt-1">Elegí un proyecto según tu nivel y seguí los pasos.</p>
       </div>
 
+      {/* Barra de búsqueda */}
+      <div className="relative">
+        <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" aria-hidden="true" />
+        <input
+          type="search"
+          placeholder="Buscar por nombre, descripción o telar…"
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-card text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+
       <div role="group" aria-label="Filtrar por nivel" className="flex gap-2 overflow-x-auto pb-1">
         {niveles.map(n => (
           <button
@@ -288,7 +307,9 @@ export default function Proyectos() {
       {cargando ? (
         <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-48 bg-muted animate-pulse rounded-2xl" />)}</div>
       ) : filtrados.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground text-sm">No hay proyectos para este nivel todavía.</div>
+        <div className="text-center py-12 text-muted-foreground text-sm">
+          {busqueda ? `Sin resultados para "${busqueda}".` : "No hay proyectos para este nivel todavía."}
+        </div>
       ) : (
         <div className="space-y-4">
           {filtrados.map(p => (
