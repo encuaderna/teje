@@ -169,6 +169,47 @@ export default function Materiales() {
         ))}
       </div>
 
+      {/* Banner educativo fibras sintéticas */}
+      {filtro === "Fibra sintética" && (
+        <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-5 space-y-4">
+          <div className="flex items-start gap-2">
+            <span className="text-xl flex-shrink-0">🧪</span>
+            <div>
+              <p className="font-semibold text-orange-800 dark:text-orange-300 text-sm">Las fibras sintéticas en el telar</p>
+              <p className="text-xs text-orange-700 dark:text-orange-400 mt-1 leading-relaxed">
+                Las fibras sintéticas han cambiado por completo el mundo de los telares. El hilo se somete a mucha más tensión y fricción que en el tejido a dos agujas o crochet — y es justo ahí donde los sintéticos brillan.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="bg-white/60 dark:bg-orange-900/20 rounded-xl p-3 space-y-1.5">
+              <p className="text-xs font-bold text-orange-800 dark:text-orange-300 uppercase tracking-wide">↕️ En la Urdimbre (hilos verticales)</p>
+              <ul className="space-y-1 text-xs text-foreground/80 leading-relaxed">
+                <li><span className="font-semibold">Nylon / Poliéster:</span> indestructibles bajo tensión máxima, ideales para urdir sin riesgo de rotura.</li>
+                <li><span className="font-semibold">Acrílico 100%:</span> estira bajo tensión — al sacar la pieza del telar puede "rebotar" y quedar más pequeña o acartonada.</li>
+              </ul>
+            </div>
+
+            <div className="bg-white/60 dark:bg-orange-900/20 rounded-xl p-3 space-y-1.5">
+              <p className="text-xs font-bold text-orange-800 dark:text-orange-300 uppercase tracking-wide">↔️ En la Trama (hilos horizontales)</p>
+              <ul className="space-y-1 text-xs text-foreground/80 leading-relaxed">
+                <li><span className="font-semibold">Chenille de poliéster / lanas fantasía:</span> crean relieves esponjosos en tapices y cojines difíciles de lograr con fibras naturales.</li>
+                <li><span className="font-semibold">Acrílico con lurex (metalizado):</span> refleja la luz de forma llamativa y hace resaltar los patrones del telar.</li>
+              </ul>
+            </div>
+
+            <div className="bg-white/60 dark:bg-orange-900/20 rounded-xl p-3 space-y-1.5">
+              <p className="text-xs font-bold text-orange-800 dark:text-orange-300 uppercase tracking-wide">✅ Ventajas prácticas</p>
+              <ul className="space-y-1 text-xs text-foreground/80 leading-relaxed">
+                <li><span className="font-semibold">No se fieltra:</span> el peine frota constantemente los hilos — el acrílico y el poliéster resisten sin apelmazarse.</li>
+                <li><span className="font-semibold">Económicos para proyectos grandes:</span> una manta en telar de piso con hilados sintéticos cuesta una fracción de la lana ovina 100%.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
       {cargando ? (
         <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-40 bg-muted animate-pulse rounded-2xl" />)}</div>
       ) : filtrados.length === 0 ? (
