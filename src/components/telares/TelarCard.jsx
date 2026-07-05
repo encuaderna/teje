@@ -5,6 +5,7 @@ import {
   ChevronDown, ChevronUp, Wrench, Package, Heart, Eye,
   ArrowRight, ThumbsUp, ThumbsDown, Clock, Lightbulb, AlertTriangle, ListOrdered
 } from "lucide-react";
+import CalculadorTelar from "@/components/telares/CalculadorTelar";
 
 // Datos pedagógicos estáticos por nombre de telar
 const DATOS_EXTRA = {
@@ -361,6 +362,9 @@ export default function TelarCard({ telar, favoritos, onToggleFav, vistos, onVis
                 </div>
               </InfoRow>
             )}
+
+            {/* Calculador de materiales y medidas */}
+            <CalculadorTelar telar={telar} />
 
             {/* CTA Proyectos */}
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center justify-between gap-3">
