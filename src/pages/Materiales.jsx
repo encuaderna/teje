@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { CheckSquare, Square, BookOpen } from "lucide-react";
+import ComparadorFibras from "@/components/materiales/ComparadorFibras";
 
 const tipoColor = {
   "Hilo": "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400",
@@ -150,6 +151,9 @@ export default function Materiales() {
           </div>
         </div>
       )}
+
+      {/* Comparador de fibras */}
+      <ComparadorFibras />
 
       <div role="group" aria-label="Filtrar por tipo" className="flex gap-2 overflow-x-auto pb-1">
         {tipos.map(t => (
