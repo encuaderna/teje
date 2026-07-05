@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Target, Package, ListOrdered, AlertTriangle, Lightbulb, BarChart3, Search } from "lucide-react";
+import ProyectoIcono from "@/components/proyectos/ProyectoIconos";
 import { useToast } from "@/components/ui/use-toast";
 
 const nivelColor = {
@@ -105,8 +106,12 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
 
   return (
     <article className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-      {proyecto.imagen_url && (
+      {proyecto.imagen_url ? (
         <img src={proyecto.imagen_url} alt={proyecto.titulo} className="w-full h-44 object-cover" />
+      ) : (
+        <div className="w-full h-36 bg-muted/60 flex items-center justify-center">
+          <ProyectoIcono titulo={proyecto.titulo} size={88} stroke="hsl(var(--muted-foreground))" />
+        </div>
       )}
       <div className="p-5 space-y-4">
         {/* Header */}
