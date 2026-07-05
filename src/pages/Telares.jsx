@@ -131,6 +131,17 @@ export default function Telares() {
         </div>
       )}
 
+      {/* ── Banner para zurdas/os ── */}
+      <div className="bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800 rounded-2xl p-4 flex items-start gap-3">
+        <span className="text-xl flex-shrink-0">✋</span>
+        <div>
+          <p className="text-sm font-semibold text-violet-800 dark:text-violet-300">¿Sos zurda/o?</p>
+          <p className="text-xs text-violet-700 dark:text-violet-400 mt-0.5 leading-relaxed">
+            En cada telar vas a encontrar un consejo especial adaptado para personas zurdas. Expandí las instrucciones de cualquier telar para verlo.
+          </p>
+        </div>
+      </div>
+
       {/* ── Herramientas rápidas ── */}
       <div className="grid grid-cols-2 gap-2">
         <Link

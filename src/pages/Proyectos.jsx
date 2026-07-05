@@ -286,6 +286,17 @@ export default function Proyectos() {
         <p className="text-muted-foreground text-sm mt-1">Elegí un proyecto según tu nivel y seguí los pasos.</p>
       </div>
 
+      {/* Banner para zurdas/os */}
+      <div className="bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800 rounded-2xl p-4 flex items-start gap-3">
+        <span className="text-xl flex-shrink-0">✋</span>
+        <div>
+          <p className="text-sm font-semibold text-violet-800 dark:text-violet-300">¿Sos zurda/o?</p>
+          <p className="text-xs text-violet-700 dark:text-violet-400 mt-0.5 leading-relaxed">
+            Todos los pasos de esta guía se pueden invertir: donde dice "de izquierda a derecha", leé "de derecha a izquierda". El resultado del tejido es idéntico para ambas manos dominantes.
+          </p>
+        </div>
+      </div>
+
       {/* Barra de búsqueda */}
       <div className="relative">
         <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" aria-hidden="true" />

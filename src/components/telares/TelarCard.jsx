@@ -13,60 +13,70 @@ const DATOS_EXTRA = {
     ventajas: ["Sin costo o muy bajo", "Material casero (caja de pizza)", "Perfecto para niños", "No necesita herramientas especiales"],
     limitaciones: ["Solo piezas pequeñas", "El cartón se desgasta con el uso", "Urdimbre limitada en cantidad de hilos"],
     consejo_inicial: "Empieza con lana gruesa y colores llamativos para ver el tejido más fácilmente.",
+    consejo_zurdo: "Si sos zurda/o, empezá pasando la aguja de derecha a izquierda como movimiento natural. El resultado es idéntico al tejido convencional.",
   },
   "Telar de Bastidor": {
     tiempo_estimado: "2–4 horas (fabricación)",
     ventajas: ["Muy versátil para tapices y telas", "Se puede fabricar en cualquier tamaño", "Resistente y duradero"],
     limitaciones: ["Requiere herramientas básicas de carpintería", "Necesita más inversión inicial de tiempo"],
     consejo_inicial: "Verifica con escuadra que el marco quede en 90° exactos antes de clavar los clavos.",
+    consejo_zurdo: "Para zurdas/os, es cómodo comenzar la trama desde el lado derecho hacia el izquierdo. Podés invertir la dirección de toda la pieza sin afectar el resultado final.",
   },
   "Telar Circular o Redondo": {
     tiempo_estimado: "15–30 min (tejido simple)",
     ventajas: ["Portátil y económico", "Produce formas circulares únicas", "Ideal para mandalas y apliques"],
     limitaciones: ["Solo produce piezas redondas", "Tamaño fijo según el aro", "Difícil escalar el tamaño del proyecto"],
     consejo_inicial: "Usa siempre un número impar de radios para que el patrón alternado funcione sin interrupciones.",
+    consejo_zurdo: "Este telar es muy amigable para zurdas/os: el tejido circular no tiene una dirección preferente, así que podés girar en el sentido que te resulte más cómodo.",
   },
   "Telar de Peine Rígido": {
     tiempo_estimado: "1–3 horas (bufanda completa)",
     ventajas: ["Ultra portátil", "Produce tela continua rápido", "Ideal para proyectos lineales largos"],
     limitaciones: ["Ancho de tela limitado al peine", "Solo una calada por vez", "Diseños de tejido simples"],
     consejo_inicial: "Fija siempre la urdimbre a dos puntos fijos (silla + cintura) para mantener tensión uniforme.",
+    consejo_zurdo: "Si sos zurda/o, sostén el peine con la mano derecha y lanzá la lanzadera con la izquierda. Las instrucciones que digan 'izquierda a derecha' simplemente se invierten para vos.",
   },
   "Telar María": {
     tiempo_estimado: "4–8 horas (fabricación)",
     ventajas: ["Produce telas más anchas que el bastidor", "Mayor control del diseño", "Muy usado en talleres artesanales"],
     limitaciones: ["Fabricación más compleja", "Requiere espacio mayor", "Curva de aprendizaje en los lizos"],
     consejo_inicial: "Cuida que los lizos queden todos a la misma altura y con igual tensión antes de empezar.",
+    consejo_zurdo: "Para zurdas/os, la lanzadera se lanza de forma natural con la mano izquierda. Podés operar el pedal del lizo con el pie que prefieras, ya que ambos pies trabajan igual.",
   },
   "Telar Mapuche": {
     tiempo_estimado: "Semanas a meses (pieza completa)",
     ventajas: ["Produce textiles de altísima calidad", "Permite diseños geométricos complejos", "Patrimonio cultural inmaterial"],
     limitaciones: ["Técnica de aprendizaje muy lento", "Requiere espacio y materiales específicos", "No apto para principiantes sin guía"],
     consejo_inicial: "Aprende primero los tejidos básicos en un telar más simple antes de acercarte a esta técnica.",
+    consejo_zurdo: "Históricamente esta técnica no distingue dominancia: el tejido mapuche se trabaja con ambas manos en forma pareja. Consultá a una tejedora experta para adaptar los movimientos a tu mano dominante.",
   },
   "Telar Vikingo": {
     tiempo_estimado: "2–5 horas (cinta decorativa)",
     ventajas: ["Produce cintas y trenzas únicas", "Técnica histórica fascinante", "Portátil y sin estructura fija"],
     limitaciones: ["Coordinación de tablillas requiere práctica", "Solo produce piezas estrechas", "Difícil de dominar sin práctica previa"],
     consejo_inicial: "Numera tus tablillas con lápiz antes de comenzar para no perder la secuencia de giro.",
+    consejo_zurdo: "¡Atención zurdas/os! El giro de las tablillas (hacia adelante o hacia atrás) es independiente de la mano dominante. Lo que sí podés invertir es el lado desde donde sostenés el tejido. Practicá el patrón de giro con tablillas en mano antes de tensar la urdimbre.",
   },
   "Telar de Clavijas para Mantas": {
     tiempo_estimado: "2–6 horas (manta grande)",
     ventajas: ["Permite piezas grandes con lana gruesa", "Muy rápido y vistoso", "Fácil de aprender aunque sea grande"],
     limitaciones: ["Solo para lanas o hebras muy gruesas", "El tejido es menos denso y firme", "Difícil de usar para prendas de vestir"],
     consejo_inicial: "Usa una lana súper gruesa o doble hebra para que el proyecto avance rápido y se vea voluminoso.",
+    consejo_zurdo: "Este telar es ideal para zurdas/os: el enroscado de la lana en las clavijas se puede hacer indistintamente en sentido horario o antihorario. Elegí el que te resulte más fluido.",
   },
   "Telar Huck Weaving (Brioche)": {
     tiempo_estimado: "Horas a días (pieza mediana)",
     ventajas: ["Produce texturas tridimensionales únicas", "Tejido estructurado muy estético", "Excelente para prendas premium"],
     limitaciones: ["Técnica compleja de enhebrado", "Requiere mucha concentración", "No recomendable sin experiencia previa"],
     consejo_inicial: "Diseña el patrón en papel cuadriculado antes de enhebrar — así evitás errores costosos en el tejido.",
+    consejo_zurdo: "Al enhebrar los lizos, las personas zurdas pueden encontrar más cómodo trabajar de derecha a izquierda. El patrón Huck no cambia si invertís el orden de enhebrado, solo asegurate de ser consistente en toda la pieza.",
   },
   "Telar Circular para Calcetines": {
     tiempo_estimado: "3–6 horas (par de calcetines)",
     ventajas: ["Produce calcetines en tubo sin costuras", "Muy eficiente para producción en serie", "Fascinante mecánica circular"],
     limitaciones: ["De mayor inversión que otros telares", "Requiere ajuste preciso de agujas", "Curva de aprendizaje técnico inicial"],
     consejo_inicial: "Haz siempre algunas vueltas de prueba con lana de descarte antes de empezar el proyecto real.",
+    consejo_zurdo: "La manivela de este telar se gira siempre en el mismo sentido (indicado por el fabricante) sin importar si sos zurda/o. La operación es ambidextra por diseño.",
   },
 };
 
@@ -299,6 +309,14 @@ export default function TelarCard({ telar, favoritos, onToggleFav, vistos, onVis
                   ))}
                 </ol>
               </InfoRow>
+            )}
+
+            {/* Consejo para zurdas/os */}
+            {extra.consejo_zurdo && (
+              <div className="bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-900 rounded-xl p-4">
+                <p className="text-xs font-bold text-violet-800 dark:text-violet-300 uppercase tracking-wider mb-1.5">✋ Si sos zurda/o</p>
+                <p className="text-sm text-foreground leading-relaxed">{extra.consejo_zurdo}</p>
+              </div>
             )}
 
             {/* Consejo de armado */}

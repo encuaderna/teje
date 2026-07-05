@@ -13,7 +13,7 @@ const TERMINOS = [
     termino: "Trama",
     categoria: "Estructura",
     definicion: "El hilo que se pasa de lado a lado, entrelazándose con la urdimbre para crear el tejido. Va perpendicular a la urdimbre y es el hilo que 'teje' propiamente dicho.",
-    ejemplo: "El hilo que pasas con la aguja o lanzadera de izquierda a derecha (y viceversa) es la trama.",
+    ejemplo: "El hilo que pasás con la aguja o lanzadera de un lado al otro es la trama. Si sos zurda/o, podés empezar desde el lado que te resulte más cómodo — la dirección no afecta el tejido.",
     emoji: "↔️",
   },
   {
@@ -40,8 +40,8 @@ const TERMINOS = [
   {
     termino: "Pasada",
     categoria: "Técnica",
-    definicion: "Cada vez que el hilo de trama cruza el ancho del tejido de un borde al otro. Una pasada va de izquierda a derecha, la siguiente de derecha a izquierda.",
-    ejemplo: "Completar 10 pasadas en un telar pequeño equivale a aproximadamente 1 cm de tejido.",
+    definicion: "Cada vez que el hilo de trama cruza el ancho del tejido de un borde al otro. Una pasada va de un borde al otro y la siguiente regresa en sentido contrario.",
+    ejemplo: "Completar 10 pasadas en un telar pequeño equivale a aproximadamente 1 cm de tejido. Si sos zurda/o, podés empezar desde el lado derecho — el resultado es idéntico.",
     emoji: "➡️",
   },
   {
