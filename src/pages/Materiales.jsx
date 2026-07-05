@@ -121,8 +121,9 @@ export default function Materiales() {
     });
   };
 
-  const tipos = ["Todos", "Hilo", "Lana", "Fibra natural", "Fibra sintética", "Otro"];
-  const filtrados = filtro === "Todos" ? materiales : materiales.filter(m => m.tipo === filtro);
+  const tipos = ["Todos", "Hilo", "Lana", "Fibra natural", "Fibra sintética", "Otro", "♻️ Reciclar lanas e hilos"];
+  const esReciclar = filtro === "♻️ Reciclar lanas e hilos";
+  const filtrados = filtro === "Todos" ? materiales : esReciclar ? [] : materiales.filter(m => m.tipo === filtro);
   const totalChecked = Object.values(checkedItems).filter(Boolean).length;
 
   // Para cada material, buscar proyectos que lo mencionen en sus materiales[]
@@ -215,9 +216,42 @@ export default function Materiales() {
         </div>
       )}
 
+      {/* Pestaña especial: Reciclar lanas e hilos */}
+      {esReciclar && (
+        <div className="space-y-5">
+          <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 flex items-start gap-3">
+            <span className="text-xl flex-shrink-0">♻️</span>
+            <div>
+              <p className="font-semibold text-emerald-800 dark:text-emerald-300 text-sm">Reciclar lanas e hilos en casa</p>
+              <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1 leading-relaxed">
+                Recuperar lana de prendas viejas es ultra sencillo y reduce el desperdicio textil. Estas guías te explican cómo hacerlo paso a paso, desde deshacer un chaleco hasta reciclar fibras para nuevos proyectos.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Guía 1 — Deshacer un chaleco y reciclar la lana</p>
+              <img
+                src="https://media.base44.com/images/public/6a4974c0cd34f36d25c3bd81/2e6ef5ae6_image.png"
+                alt="Guía técnica: deshacer un chaleco y reciclar la lana"
+                className="w-full rounded-xl object-contain"
+              />
+            </div>
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Guía 2 — Cómo reciclar lana en casa</p>
+              <img
+                src="https://media.base44.com/images/public/6a4974c0cd34f36d25c3bd81/5ce2fac5d_image.png"
+                alt="Guía técnica: cómo reciclar lana en casa"
+                className="w-full rounded-xl object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {cargando ? (
         <div className="space-y-4">{[1, 2, 3].map(i => <div key={i} className="h-40 bg-muted animate-pulse rounded-2xl" />)}</div>
-      ) : filtrados.length === 0 ? (
+      ) : esReciclar ? null : filtrados.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground text-sm">No hay materiales en esta categoría.</div>
       ) : (
         <div className="space-y-4">
