@@ -4,6 +4,7 @@ import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Targ
 import ProyectoIcono from "@/components/proyectos/ProyectoIconos";
 import { useToast } from "@/components/ui/use-toast";
 import { jsPDF } from "jspdf";
+import CalculadorMateriales from "@/components/proyectos/CalculadorMateriales";
 
 const nivelColor = {
   Principiante: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300",
@@ -354,6 +355,9 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
                 </ul>
               </SeccionDetalle>
             )}
+
+            {/* Calculador de materiales */}
+            <CalculadorMateriales proyecto={proyecto} />
 
             {/* Etapas interactivas con ticks */}
             <EtapasInteractivas
