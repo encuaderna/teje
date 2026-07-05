@@ -108,7 +108,7 @@ export default function CalculadorMateriales({ proyecto }) {
                   key={i}
                   onClick={() => { setAncho(s.ancho); setLargo(s.largo); }}
                   className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-colors
-                    ${ancho === s.ancho && largo === s.largo
+                    ${Number(ancho) === s.ancho && Number(largo) === s.largo
                       ? "bg-blue-600 text-white border-blue-600"
                       : "bg-white dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700 hover:bg-blue-100"}`}
                 >

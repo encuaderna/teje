@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Calculator } from "lucide-react";
 
 /**
@@ -65,7 +65,6 @@ const DATOS_TELAR = {
       { label: "Grande (manta)", ancho: 80, alto: 100 },
     ],
     calcular(a, h) {
-      const perimetro = Math.round(2 * (a + h) / 100 * 1.15); // metros de listón
       const clavos = Math.floor(a / 1.0) * 2; // 1 clavo cada cm en ambos lados horizontales
       const tornillos = 8; // 2 por esquina
       const largoUrdimbre = Math.round((h + 40) * Math.floor(a / 1.0) / 100); // metros
@@ -183,8 +182,8 @@ const DATOS_TELAR = {
           `1 peine rígido de ${a} cm de ancho (se consigue en tiendas de artesanías; también puede fabricarse en madera)`,
           `${largoUrdimbre} m de hilo de urdimbre resistente — algodón peinado Nº 8 o nailon`,
           `${largoTrama} m de hilo de trama decorativo`,
-          "1 tablita o palito de madera de ${a + 5} cm para hacer la calada (separador de hilos)",
-          "1 lanzadera de cartón o madera de ${a - 2} cm",
+          `1 tablita o palito de madera de ${a + 5} cm para hacer la calada (separador de hilos)`,
+          `1 lanzadera de cartón o madera de ${a - 2} cm`,
         ],
         herramientas: [
           "Aguja de peine o gancho incluido con el peine",
@@ -200,7 +199,7 @@ const DATOS_TELAR = {
           "Atá el extremo libre de todos los hilos de urdimbre a tu cintura (usando un tablero de apoyo o correa) para tensarlos con tu propio cuerpo.",
           "Girá el peine 90° para separar la calada (los hilos de arriba y los de abajo se separan). Pasá la lanzadera con el hilo de trama de lado a lado.",
           "Girá el peine al otro lado para cambiar la calada y volvé a pasar la lanzadera. Apretá la trama con el peine hacia abajo.",
-          "Repetí: girar peine — pasar trama — girar peine — apretar — hasta alcanzar los ${h} cm de largo.",
+          `Repetí: girar peine — pasar trama — girar peine — apretar — hasta alcanzar los ${h} cm de largo.`,
           "Para rematar, cortá la urdimbre dejando 10 cm de margen en cada extremo y hacé nudos en pares.",
         ],
         notas: [
@@ -222,8 +221,6 @@ const DATOS_TELAR = {
       { label: "Tela ancha", ancho: 80, alto: 200 },
     ],
     calcular(a, h) {
-      const listonesMayor = `${a + 30}`;
-      const listonesLateral = `${h + 40}`;
       const clavos = Math.floor(a / 0.8) * 2;
       const hilosLizo = Math.floor(a / 0.8);
       const largoUrdimbre = Math.round(hilosLizo * (h + 60) / 100 * 1.15);
@@ -247,7 +244,7 @@ const DATOS_TELAR = {
           "Escuadra de 90°",
           "2 sargentos o prensas",
           "Lija grano 120",
-          "Lanzadera de madera (o de cartón de ${a - 2} cm)",
+          `Lanzadera de madera (o de cartón de ${a - 2} cm)`,
           "Peine de densidad 5 dientes/cm",
           "Aguja de enhebrar",
           "Tijera",
@@ -282,8 +279,6 @@ const DATOS_TELAR = {
       { label: "Manta tradicional", ancho: 100, alto: 200 },
     ],
     calcular(a, h) {
-      const palosHorizontales = `${a + 20}`;
-      const palosVerticales = `${h + 60}`;
       const hilos = Math.floor(a / 0.5); // 2 hilos/cm
       const largoUrdimbre = Math.round(hilos * (h + 60) / 100 * 1.2);
       const largoTrama = Math.round(a * h * 0.018);
@@ -294,8 +289,8 @@ const DATOS_TELAR = {
           `${Math.round((a + h) * 0.5)} m de cordel de sisal o algodón grueso para atar el marco`,
           `${largoUrdimbre} m de hilo de urdimbre (lana de oveja 100% o hilado artesanal)`,
           `${largoTrama} m de lana o hilado de trama (color principal + colores de diseño)`,
-          "1 lanzadera de madera o cartón de ${a - 5} cm",
-          "1 palo separador de calada de ${a + 5} cm (kallwa)",
+          `1 lanzadera de madera o cartón de ${a - 5} cm`,
+          `1 palo separador de calada de ${a + 5} cm (kallwa)`,
         ],
         herramientas: [
           "Sierra o machete para cortar los palos (si son ramas o cañas naturales)",
@@ -458,7 +453,7 @@ const DATOS_TELAR = {
           "Sierra y taladro (para el bastidor — ver instrucciones Telar de Bastidor)",
           "Escuadra de 90°",
           `Peine de densidad ${hilosPorCm * 2} dientes/cm`,
-          "Lanzadera de madera de ${a - 2} cm",
+          `Lanzadera de madera de ${a - 2} cm`,
           "Aguja de enhebrar",
           "Cuaderno cuadriculado para diseñar el patrón Huck antes de enhebrar",
         ],
