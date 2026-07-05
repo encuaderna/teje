@@ -172,6 +172,11 @@ export default function Materiales() {
       {/* Banner educativo fibras sintéticas */}
       {filtro === "Fibra sintética" && (
         <div className="bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-800 rounded-2xl p-5 space-y-4">
+          <img
+            src="https://media.base44.com/images/public/6a4974c0cd34f36d25c3bd81/c8a910564_image.png"
+            alt="Fibras sintéticas en el arte del telar"
+            className="w-full rounded-xl object-cover"
+          />
           <div className="flex items-start gap-2">
             <span className="text-xl flex-shrink-0">🧪</span>
             <div>
