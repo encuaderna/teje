@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Target, Package, ListOrdered, AlertTriangle, Lightbulb, BarChart3, Search } from "lucide-react";
+import { Clock, ChevronDown, ChevronUp, CheckCircle2, Circle, Plus, Layers, Target, Package, ListOrdered, AlertTriangle, Lightbulb, BarChart3, Search, Download } from "lucide-react";
 import ProyectoIcono from "@/components/proyectos/ProyectoIconos";
 import { useToast } from "@/components/ui/use-toast";
+import { jsPDF } from "jspdf";
 
 const nivelColor = {
   Principiante: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300",
@@ -83,6 +84,111 @@ function EtapasInteractivas({ proyecto, etapasCompletadas, onToggleEtapa }) {
 
 function getNota(proyectoId) {
   try { return localStorage.getItem(`nota_${proyectoId}`) || ""; } catch { return ""; }
+}
+
+function descargarPDF(proyecto, nota, etapasCompletadas) {
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const pageW = doc.internal.pageSize.getWidth();
+  const margin = 18;
+  const contentW = pageW - margin * 2;
+  let y = 20;
+
+  const addText = (text, size, style, color, indent = 0) => {
+    doc.setFontSize(size);
+    doc.setFont("helvetica", style);
+    doc.setTextColor(...color);
+    const lines = doc.splitTextToSize(text, contentW - indent);
+    lines.forEach(line => {
+      if (y > 270) { doc.addPage(); y = 20; }
+      doc.text(line, margin + indent, y);
+      y += size * 0.45;
+    });
+    y += 2;
+  };
+
+  const addLine = () => {
+    doc.setDrawColor(200, 185, 160);
+    doc.line(margin, y, pageW - margin, y);
+    y += 5;
+  };
+
+  // Título
+  addText(proyecto.titulo.toUpperCase(), 20, "bold", [80, 50, 20]);
+  addLine();
+
+  // Meta
+  const meta = [proyecto.nivel, proyecto.tiempo_estimado, proyecto.telar_recomendado].filter(Boolean).join("  ·  ");
+  if (meta) addText(meta, 10, "normal", [130, 110, 80]);
+  if (proyecto.descripcion) addText(proyecto.descripcion, 11, "normal", [60, 45, 30]);
+  y += 2;
+
+  // Objetivo
+  if (proyecto.objetivo) {
+    addText("OBJETIVO", 10, "bold", [120, 80, 30]);
+    addText(proyecto.objetivo, 10, "normal", [60, 45, 30]);
+    y += 2;
+  }
+
+  // Materiales
+  if (proyecto.materiales?.length) {
+    addLine();
+    addText("MATERIALES NECESARIOS", 10, "bold", [120, 80, 30]);
+    proyecto.materiales.forEach(m => addText(`• ${m}`, 10, "normal", [60, 45, 30], 3));
+    y += 2;
+  }
+
+  // Pasos
+  if (proyecto.pasos?.length) {
+    addLine();
+    addText("PASOS A SEGUIR", 10, "bold", [60, 80, 140]);
+    proyecto.pasos.forEach((p, i) => addText(`${i + 1}. ${p}`, 10, "normal", [60, 45, 30], 3));
+    y += 2;
+  }
+
+  // Etapas de progreso
+  if (proyecto.etapas_progreso?.length) {
+    addLine();
+    addText("ETAPAS DE PROGRESO", 10, "bold", [80, 50, 120]);
+    proyecto.etapas_progreso.forEach((e, i) => {
+      const hecha = etapasCompletadas.includes(i);
+      addText(`${hecha ? "✓" : "○"} ${e}`, 10, hecha ? "bold" : "normal", hecha ? [30, 130, 80] : [60, 45, 30], 3);
+    });
+    y += 2;
+  }
+
+  // Errores comunes
+  if (proyecto.errores_comunes?.length) {
+    addLine();
+    addText("ERRORES FRECUENTES", 10, "bold", [160, 60, 50]);
+    proyecto.errores_comunes.forEach(e => addText(`⚠ ${e}`, 10, "normal", [160, 60, 50], 3));
+    y += 2;
+  }
+
+  // Soluciones
+  if (proyecto.soluciones?.length) {
+    addLine();
+    addText("SOLUCIONES Y CONSEJOS", 10, "bold", [40, 120, 80]);
+    proyecto.soluciones.forEach(s => addText(`💡 ${s}`, 10, "normal", [40, 100, 60], 3));
+    y += 2;
+  }
+
+  // Notas personales
+  if (nota.trim()) {
+    addLine();
+    addText("MIS NOTAS Y TRUCOS", 10, "bold", [140, 100, 20]);
+    addText(nota, 10, "italic", [100, 70, 20]);
+    y += 2;
+  }
+
+  // Footer
+  if (y > 260) { doc.addPage(); y = 20; }
+  y = Math.max(y + 8, 275);
+  doc.setFontSize(8);
+  doc.setTextColor(160, 140, 110);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Guía de Telares · ${proyecto.titulo} · ${new Date().toLocaleDateString("es-CL")}`, margin, y);
+
+  doc.save(`${proyecto.titulo.replace(/\s+/g, "_")}.pdf`);
 }
 
 function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
@@ -255,6 +361,15 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
               etapasCompletadas={etapasCompletadas}
               onToggleEtapa={handleToggleEtapa}
             />
+
+            {/* Botón descargar PDF */}
+            <button
+              onClick={() => descargarPDF(proyecto, nota, etapasCompletadas)}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border bg-card hover:bg-muted text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Download size={14} aria-hidden="true" />
+              Descargar guía en PDF
+            </button>
 
             {/* Notas personales */}
             <div className="space-y-2">
