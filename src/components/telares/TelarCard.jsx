@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import TelarIcono from "@/components/telares/TelarIconos";
 import {
   ChevronDown, ChevronUp, Wrench, Package, Heart, Eye,
   ArrowRight, ThumbsUp, ThumbsDown, Clock, Lightbulb, AlertTriangle, ListOrdered
@@ -115,8 +116,12 @@ export default function TelarCard({ telar, favoritos, onToggleFav, vistos, onVis
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-20 bg-muted flex items-center justify-center">
-            <span className="text-3xl">🧶</span>
+          <div className="w-full h-36 bg-muted/60 flex items-center justify-center">
+            <TelarIcono
+              nombre={telar.nombre}
+              size={88}
+              stroke="hsl(var(--muted-foreground))"
+            />
           </div>
         )}
 
