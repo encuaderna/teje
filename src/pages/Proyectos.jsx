@@ -81,9 +81,20 @@ function EtapasInteractivas({ proyecto, etapasCompletadas, onToggleEtapa }) {
   );
 }
 
+function getNota(proyectoId) {
+  try { return localStorage.getItem(`nota_${proyectoId}`) || ""; } catch { return ""; }
+}
+
 function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
   const [expandido, setExpandido] = useState(false);
   const [etapasCompletadas, setEtapasCompletadas] = useState(() => getEtapasCompletadas(proyecto.id));
+  const [nota, setNota] = useState(() => getNota(proyecto.id));
+  const [editandoNota, setEditandoNota] = useState(false);
+
+  const handleGuardarNota = (valor) => {
+    setNota(valor);
+    localStorage.setItem(`nota_${proyecto.id}`, valor);
+  };
 
   const total = proyecto.etapas_progreso?.length || 0;
   // Solo contar etapas con índice válido para evitar porcentaje > 100
@@ -244,6 +255,46 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
               etapasCompletadas={etapasCompletadas}
               onToggleEtapa={handleToggleEtapa}
             />
+
+            {/* Notas personales */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">📝 Mis notas y trucos</p>
+                {!editandoNota && (
+                  <button
+                    onClick={() => setEditandoNota(true)}
+                    className="text-xs text-primary hover:underline font-medium"
+                  >
+                    {nota ? "Editar" : "+ Agregar nota"}
+                  </button>
+                )}
+              </div>
+              {editandoNota ? (
+                <div className="space-y-2">
+                  <textarea
+                    autoFocus
+                    value={nota}
+                    onChange={e => handleGuardarNota(e.target.value)}
+                    placeholder="Ej: Usé lana más gruesa, cambié el color en la fila 5, tensión media…"
+                    rows={4}
+                    className="w-full text-sm rounded-xl border border-border bg-card p-3 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none leading-relaxed"
+                  />
+                  <button
+                    onClick={() => setEditandoNota(false)}
+                    className="text-xs text-primary font-semibold hover:underline"
+                  >
+                    ✓ Listo
+                  </button>
+                </div>
+              ) : nota ? (
+                <div
+                  onClick={() => setEditandoNota(true)}
+                  className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl p-3 cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-950/30 transition-colors"
+                >
+                  <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{nota}</p>
+                </div>
+              ) : null}
+            </div>
           </div>
         )}
       </div>
