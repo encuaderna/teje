@@ -174,6 +174,15 @@ function ProyectoCard({ proyecto, onAgregar, onActualizar }) {
         {expandido && (
           <div className="space-y-5 pt-3 border-t border-border">
 
+            {/* Imagen completa (infografía) cuando está expandido */}
+            {proyecto.imagen_url && (
+              <img
+                src={proyecto.imagen_url}
+                alt={`Infografía de ${proyecto.titulo}`}
+                className="w-full rounded-xl object-contain"
+              />
+            )}
+
             {proyecto.objetivo && (
               <SeccionDetalle icon={Target} titulo="Objetivo" color="text-primary">
                 <p className="text-sm leading-relaxed">{proyecto.objetivo}</p>
